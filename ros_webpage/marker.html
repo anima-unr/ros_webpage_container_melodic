@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="data:,"> 
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+#markerss{
+  background-color: lightblue;
+  color: black;
+  width : 80%,
+  height : 60%
+  text-align: center;
+}
+#header {
+    width: 100%;
+    background-color: red;
+    height: 30px;
+}
+
+
+.float-container {
+    border: 3px solid #fff;
+    padding: 20px;
+}
+
+.float-child {
+    width: 950;
+    float: left;
+    padding: 20px;
+    border: 2px white;
+}
+.float-child2 {
+    width: 30%;
+    float: left;
+    padding: 20px;
+    border: 2px solid white;
+}
+.float-child3 {
+    width: 90%;
+    float: right;
+    padding: 20px;
+    border: 2px solid white;*/
+}
+.float-child-child1 {
+    width: 10%;
+    float: left;
+    padding: 20px;
+    border: 2px solid white;*/
+}
+
+#myDIV6 {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  color: white;
+  text-align: center;
+}
+#myDIV7 {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  color: white;
+  text-align: center;
+}
+#myDIV8 {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  color: white;
+  text-align: center;
+}
+#myDIV9 {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  color: white;
+  text-align: center;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+</style>
+<!-- <meta charset="utf-8" /> -->
+
+<script type="text/javascript" src="http://static.robotwebtools.org/threejs/current/three.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/ros3djs/current/ros3d.min.js"></script>
+<!-- <script type="text/javascript" src="start.js"></script>
+<script type="text/javascript" src="killall.js"></script>
+<script type="text/javascript" src="robot_run.js"></script>
+<script type="text/javascript" src="human_run.js"></script>
+<script type="text/javascript" src="update_param.js"></script>
+<script type="text/javascript" src="idle_time_marker.js"></script> -->
+<script type="text/javascript">
+ var cachebuster = Math.round(new Date().getTime() / 1000);
+ document.write('<scr'+'ipt type="text/javascript" src="start.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+ document.write('<scr'+'ipt type="text/javascript" src="killall.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+ document.write('<scr'+'ipt type="text/javascript" src="robot_run.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+document.write('<scr'+'ipt type="text/javascript" src="human_run.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+ document.write('<scr'+'ipt type="text/javascript" src="update_param.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+ document.write('<scr'+'ipt type="text/javascript" src="idle_time_marker.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+</script> 
+<!-- <script type="text/javascript" src="@string.Format("start.js?v={0}", DateTime.Now.Ticks)"></script>
+<script type="text/javascript" src="@string.Format("killall.js?v={0}", DateTime.Now.Ticks)"></script>
+<script type="text/javascript" src="@string.Format("robot_run.js?v={0}", DateTime.Now.Ticks)"></script>
+<script type="text/javascript" src="@string.Format("human_run.js?v={0}", DateTime.Now.Ticks)"></script>
+<script type="text/javascript" src="@string.Format("update_param.js?v={0}", DateTime.Now.Ticks)"></script> -->
+<!-- <script src="start.js"></script> -->
+<!-- <script src="killall.js"></script>
+<script src="robot_run.js"></script>
+<script src="human_run.js"></script>
+<script src="update_param.js"></script> -->
+
+<!--     <script type="text/javascript">
+
+    </script> -->
+<script type="text/javascript" type="text/javascript">
+        window.addEventListener('beforeunload', function (e) {
+            alert("here");
+
+         //   if(refresh_val){
+          
+            e.preventDefault();
+            e.returnValue = '';
+    //      }
+            // letskill();
+            // user_value_robot.set(false);
+            // user_value_human.set(false);
+
+
+ 
+        });
+
+
+
+</script>
+
+<script type="text/javascript" type="text/javascript">
+
+   // And finally, publish.
+   var refresh_val;
+   let timer, currSeconds = 0;
+           window.onload = resetTimer;
+        window.onmousemove = resetTimer;
+        window.onmousedown = resetTimer;
+        window.ontouchstart = resetTimer;
+        window.onclick = resetTimer;
+        window.onkeypress = resetTimer;
+
+  var divlist = ["myDIV6", "myDIV7", "myDIV8", "myDIV9"];
+  var divcheck = [0,0,0,0];
+  var finalseq = [];
+
+  var i = 0;
+var start,end,param_val,unique_ID_val,user_val,reload_val,final_page_show;
+  var ros2 = new ROSLIB.Ros({
+    url : 'ws://134.197.40.54:9090'
+  });
+  var ros = new ROSLIB.Ros({
+    url : 'ws://134.197.40.54:9091' //human
+  });
+  var game_param_mode = new ROSLIB.Param({  // game_mode_param will show if the practice session or experimental session
+     ros : ros,
+     name :  '/game_mode_param'
+    });
+game_param_mode.get(function(value) {
+param_val = value;
+
+
+});
+var user_param_mode = new ROSLIB.Param({
+     ros : ros,
+     name :  '/user_param'
+    });
+user_param_mode.get(function(value) {
+user_val = value;
+
+});
+var unique_ID_final = new ROSLIB.Param({ //final user id
+     ros : ros,
+     name :  '/uID_final'
+    });
+unique_ID_final.get(function(value) {
+unique_ID_val = value;
+
+
+});
+        // window.addEventListener('beforeunload', function (e) {
+
+
+
+        //     e.preventDefault();
+        //     e.returnValue = '';
+        //     // letskill();
+        //     // user_value_robot.set(false);
+        //     // user_value_human.set(false);
+
+
+ 
+        // });
+function checkFirstVisit() {
+  if(document.cookie.indexOf('mycookie')==-1) {
+  //  refresh_val = false;
+    // cookie doesn't exist, create it now
+    document.cookie = 'mycookie=1';
+    if(user_val){
+      window.location.href = 'logout.html';
+    }
+    return true;
+  }
+  else {
+    //alert("refresh");
+    refresh_val = true;
+    //alert(refresh_val);
+
+    // not first visit, so alert
+    //commenting out again for the user val
+//     user_value_robot.set(true);
+//     user_value_human.set(true);
+// game_robot();
+// game_human();
+
+
+    return false;
+  }
+}
+
+
+  function init() {
+
+checkFirstVisit();
+
+
+    // Create the main viewer.
+    var viewer = new ROS3D.Viewer({
+      divID : 'markers',
+      width : 900,
+      height : 600,
+      antialias : true,
+      cameraPose : { x: 0,y : 0.8, z:1.8},
+      //lineTypePanAndZoomFrame: true
+    });
+
+    // Setup a client to listen to TFs.
+    var tfClient = new ROSLIB.TFClient({
+      ros : ros,
+      angularThres : 0.01,
+      transThres : 0.01,
+      rate : 10.0,
+      fixedFrame : '/table'
+    });
+
+    // Setup the marker client.
+    var imClient = new ROS3D.InteractiveMarkerClient({
+      ros : ros,
+      tfClient : tfClient,
+      topic : '/basic_controls',
+      camera : viewer.camera,
+      rootObject : viewer.selectableObjects
+    });
+    var markerClient = new ROS3D.MarkerClient({
+      ros : ros,
+      tfClient : tfClient,
+      topic : '/markers',
+      rootObject : viewer.scene
+    });
+
+  if(param_val==false){
+   
+     var formElement = document.getElementById('gamemode_headline'); 
+   formElement.innerHTML = "Color Sequence Game - Practice Session";
+ }
+ else{
+       var formElement = document.getElementById('gamemode_headline'); 
+   formElement.innerHTML = "Color Sequence Game";
+ }
+
+
+
+  var testStr1 = new ROSLIB.Topic({
+    ros : ros,
+    name : '/launch_basic_control',
+    messageType : 'std_msgs/String'
+  });
+  var str = new ROSLIB.Message({
+     data : 'table_task_sim basic_controls.py'
+  });
+
+   // And finally, publish.
+   testStr1.publish(str);
+
+
+  var testStr2 = new ROSLIB.Topic({
+    ros : ros,
+    name : '/launch_hand_intention',
+    messageType : 'std_msgs/String'
+  });
+  var str = new ROSLIB.Message({
+     data : 'table_task_sim hand_intention.launch'
+  });
+
+   // And finally, publish.
+   testStr2.publish(str);
+
+
+  var testStr3 = new ROSLIB.Topic({
+    ros : ros,
+    name : '/launch_int_marker',
+    messageType : 'std_msgs/String'
+  });
+  var str = new ROSLIB.Message({
+     data : 'interactive_marker_proxy proxy topic_ns:=/basic_controls target_frame:=/table'
+  });
+
+   // And finally, publish.
+   testStr3.publish(str);
+
+
+    var alert_status = new ROSLIB.Topic({
+    ros : ros,
+    name : '/alert',
+    messageType : 'std_msgs/Bool'
+  });
+  alert_status.subscribe(function(data) {
+    // console.log('Received message on ' + listener_objstatus.name + ': ' + data.done);
+
+    if(data.data == 1){
+      console.log("hey you should not go for this!!");
+      alert("You should not go for this!!Please go back and try again!!");
+    }
+ 
+  });
+
+
+
+
+
+
+
+  // Subscribing to a Topic
+  // ----------------------
+  var listener = new ROSLIB.Topic({
+    ros : ros2,
+    name : '/issues',
+    messageType : 'dialogue/Issue'
+  });
+
+
+
+
+
+  listener.subscribe(function(data) {
+    console.log('Received message on ' + listener.name + ': ' + data.issue);
+    var method_ = "None"
+    var object_ = "None"
+    var robot_id_ = "None"
+    while(method_=="None"){
+      if(data.issue == "collision"){
+      var txt;
+
+      if (confirm("It appears that you are going to grab the " + data.object +" object.\n" + "Should I grab the " + data.object + " object?" )) {
+        txt = data.issue;
+        method_ = "robot_pick_and_place"
+        object_ = data.object
+        robot_id_ = data.robot_id
+
+    } 
+    else 
+    {
+      txt = "You pressed Cancel!";
+      method_ = "human_pick_and_place"
+      object_ = data.object
+      robot_id_ = data.robot_id
+
+    }
+
+  
+}
+
+
+
+  
+   var resolution_robot = new ROSLIB.Topic({
+    ros : ros2,
+    name : '/resolution',
+    messageType : 'dialogue/Resolution'
+  });
+  var twist1 = new ROSLIB.Message({
+
+    object : object_,
+    method : method_,
+    robot_id : robot_id_
+
+  });
+  resolution_robot.publish(twist1);
+
+
+  var resolution_human = new ROSLIB.Topic({
+    ros : ros,
+    name : '/resolution_',
+    messageType : 'dialogue/Resolution'
+  });
+  var twist2 = new ROSLIB.Message({
+
+    object : object_,
+    method : method_,
+    robot_id : robot_id_
+
+  });
+  resolution_human.publish(twist2);
+}
+
+  });
+
+
+
+
+
+  // Subscribing to a Topic
+  // ----------------------
+  var listener_objstatus = new ROSLIB.Topic({
+    ros : ros,
+    name : '/Red_status',
+    messageType : 'robotics_task_tree_msgs/ObjStatus'
+  });
+  listener_objstatus.subscribe(function(data) {
+  //	console.log('Received message on ' + listener_objstatus.name + ': ' + data.done);
+  	if(data.done==true && divcheck[0]==0 ){
+
+
+
+document.getElementById(divlist[i]).style.backgroundColor = "red";
+divcheck[0]=1;
+finalseq.push("Red");
+
+i++;
+if(i==4){
+donefunction();
+}
+
+
+
+  }
+  });
+
+  var listener_objstatus = new ROSLIB.Topic({
+    ros : ros,
+    name : '/Blue_status',
+    messageType : 'robotics_task_tree_msgs/ObjStatus'
+  });
+  listener_objstatus.subscribe(function(data) {
+  //	console.log('Received message on ' + listener_objstatus.name + ': ' + data.done);
+  	  	if(data.done==true && divcheck[1]==0 ){
+//document.getElementById("myDIV7").style.backgroundColor = "blue";
+
+  document.getElementById(divlist[i]).style.backgroundColor = "blue";
+
+finalseq.push("Blue");
+ divcheck[1]=1;
+i++;
+if(i==4){
+donefunction();
+}
+
+//   	$("#myDIV6").animate().css({
+//   backgroundColor: "blue"
+// }, 2500);
+  }
+  });
+    var listener_objstatus = new ROSLIB.Topic({
+    ros : ros,
+    name : '/Green_status',
+    messageType : 'robotics_task_tree_msgs/ObjStatus'
+  });
+  listener_objstatus.subscribe(function(data) {
+  //	console.log('Received message on ' + listener_objstatus.name + ': ' + data.done);
+  	if(data.done==true){
+document.getElementById("myDIV8").style.backgroundColor = "green";
+//   	$("#myDIV6").animate().css({
+//   backgroundColor: "blue"
+// }, 2500);
+  }
+  });
+    var listener_objstatus = new ROSLIB.Topic({
+    ros : ros,
+    name : '/Yellow_status',
+    messageType : 'robotics_task_tree_msgs/ObjStatus'
+  });
+  listener_objstatus.subscribe(function(data) {
+  //	console.log('Received message on ' + listener_objstatus.name + ': ' + data.done);
+  	if(data.done==true && divcheck[2]==0  ){
+//document.getElementById("myDIV9").style.backgroundColor = "Yellow";
+
+
+document.getElementById(divlist[i]).style.backgroundColor = "Yellow";
+
+finalseq.push("Yellow");
+divcheck[2]=1; 
+i++;
+if(i==4){
+donefunction();
+}
+
+
+  }
+  });
+    var listener_objstatus = new ROSLIB.Topic({
+    ros : ros,
+    name : '/Pink_status',
+    messageType : 'robotics_task_tree_msgs/ObjStatus'
+  });
+  listener_objstatus.subscribe(function(data) {
+  //	console.log('Received message on ' + listener_objstatus.name + ': ' + data.done);
+  	if(data.done==true && divcheck[3]==0 ){
+//document.getElementById("myDIV10").style.backgroundColor = "pink";
+
+document.getElementById(divlist[i]).style.backgroundColor = "Pink";
+
+finalseq.push("Pink");
+divcheck[3]=1;
+i++; 
+if(i==4){
+donefunction();
+}
+
+	
+
+  }
+  });
+
+
+
+}
+
+function donefunction(){
+// var end = new Date().getTime();
+// var time = end - start;
+//alert("Thank you for playing!!");
+  var ros = new ROSLIB.Ros({
+    url : 'ws://134.197.40.54:9091' //human
+  });
+
+setTimeout(letskill(), 20000);
+ //letskill();
+
+if(param_val==true){
+// Get the value of the max linear speed paramater
+
+// var unique_ID_final = new ROSLIB.Param({
+//      ros : ros,
+//      name :  '/uID_final'
+//     });
+// unique_ID_final.get(function(value) {
+  final_page_show = true;
+  document.getElementById('show_page').style.display = 'none';
+
+   var formElement = document.getElementById('demo_ID'); 
+   formElement.innerHTML = "Your Unique ID is " + unique_ID_val + "<br>Please copy the ID for your next step.";
+   document.getElementById('demo_ID_link_survey').style.display = 'block';
+   
+   // var formElement = document.getElementById('demo_ID_2'); 
+   // formElement.innerHTML = "Please copy the ID for your next step."
+// });
+}
+else{
+    document.getElementById('show_page').style.display = 'none';
+     var formElement = document.getElementById('demo_ID'); 
+   formElement.innerHTML = "Are you ready to play now? Select your mode and click the link below to load the game. ";
+   // document.getElementById('demo_ID_link').style.display = 'block';
+   document.getElementById('update_param_main').style.display = 'block';
+   document.getElementById('update_param_practice').style.display = 'block';
+
+   
+   // var showElem = document.getElementById('demo_ID_link'); 
+   // var showElemDisplaySetting = showElem.style.display;
+   // if(showElemDisplaySetting=='none'){
+   //  showElemDisplaySetting.style.display = 'block';
+   // }
+
+}
+
+
+
+}
+function notdonefunction(){
+var end = new Date().getTime();
+var time = end - start;
+alert('Execution time: ' + time);
+}
+
+  // Publishing a Topic
+  // ------------------
+// function myFunction() {
+//   document.getElementById("myDIV").style.backgroundColor = "lightblue";
+// }
+
+
+
+
+</script>
+</head>
+
+<body onload="init();">
+
+  
+<!-- <button onclick="myFunction()">Try it</button> -->
+<div  >
+  <h1 style="text-align:center" id="gamemode_headline"></h1>
+<div class="float-container" style="display:block" id="show_page">
+
+  <div class="float-child">
+    <div id="markers"></div>
+  </div>
+  
+  <div class="float-child2">
+
+<!--     <div class="blue">Float Column 2</div> -->
+<!--       <p class="timertext" 
+        style="font-size: 1.5rem;">
+        You are idle for
+        <span class="secs"></span> seconds.
+    </p>
+ -->    <div id="result"></div>
+<p id="demo">You can zoom in/out to have the game screen in your comfortable position.</p>
+<p> You can revisit the instruction again by clicking the link below.</p>
+<p id="instruction_link" style="text-align: center;display:block"><a href="instruction.html" target="_blank"> Instruction </a></p>
+<p> If you want to quit the game please close the window. </p>
+<!-- <p id="demo2">These are the four possible color sequences based on our conditions.</p>  -->
+<!-- <img src="seq1.png" alt="Trulli" width="350" height="80">
+<img src="seq2.png" alt="Trulli" width="350" height="80">
+<img src="seq3.png" alt="Trulli" width="350" height="80">
+<img src="seq4.png" alt="Trulli" width="350" height="80"> -->
+<p style="text-align: center;font-size: 25px"><b>For this game, the combination is: <br> 
+( Place-Red AND Place-Blue ) THEN ( Place-Yellow AND Place-Pink ))</b></p>
+<!-- Place-Red THEN Place-Blue </b></p> -->
+
+      <img src="experiment_tree.jpg" alt="" class="center">
+       <div style="clear:both;"></div>
+
+<!-- <p style="text-align: center;font-size: 25px"><b>For this game, the combination is: <br> 
+ (Place-Red AND Place-Blue) THEN Place-Yellow</b></p> -->
+<p>If you are ready to play the game, Click button READY to start the game!</p>
+<p id="checktext"></p>
+<button style="text-align: center" onclick="letsstart()">READY!!</button>
+<!-- <button onclick="letskill()">END!!</button> -->
+<div class="float-child3">
+    <div class="float-child-child1">
+      <div id="myDIV6">
+        
+    </div>
+  </div>
+      <div class="float-child-child1">
+      <div id="myDIV7">
+        
+    </div>
+  </div>
+      <div class="float-child-child1">
+      <div id="myDIV8">
+        
+    </div>
+  </div>
+      <div class="float-child-child1">
+      <div id="myDIV9">
+      
+    </div>
+  </div>
+
+<!--       <div class="float-child-child1">
+      <div id="myDIV10">
+        
+    </div>
+
+
+
+
+  </div> -->
+  </div>
+
+<!--     <div>
+<p id="uID_show"></p>
+<p id="demo_ID" style="text-align: center;font-size: 25px"><b></b></p>
+<p id="update_param_main" style="font-size: 30px; text-align: center;display:none"> <button onclick="update_actual_param()">Main Game</button> </p>
+<p id="update_param_practice" style="font-size: 30px; text-align: center;display:none"> <button onclick="update_practice_param()">Practice Session</button> </p>
+<p id="demo_ID_link" style="text-align: center;font-size: 25px;display:none"><a href="marker.html">Please click to load the Game with your chosen mode!!</a></p>
+<p id="demo_ID_link_survey" style="text-align: center;font-size: 25px;display:none"><a href="https://forms.gle/4vTGjpeQxhj9qa5u9" target="_blank">Please click to load the survey </a></p>
+
+</div> -->
+
+</div>
+</div>
+    <div>
+<p id="uID_show"></p>
+<p id="demo_ID" style="text-align: center;font-size: 25px"><b></b></p>
+<p id="update_param_main" style="font-size: 30px; text-align: center;display:none"> <button onclick="update_actual_param()">Main Game</button> </p>
+<p id="update_param_practice" style="font-size: 30px; text-align: center;display:none"> <button onclick="update_practice_param()">Practice Session</button> </p>
+<!-- <p id="demo_ID_link" style="text-align: center;font-size: 25px;display:none"><a href="marker.html">Please click to load the Game with your chosen mode!!</a></p> -->
+<p id="demo_ID_link_survey" style="text-align: center;font-size: 25px;display:none"><a href="https://forms.gle/4vTGjpeQxhj9qa5u9" target="_blank">Please click to load the survey </a></p>
+<p id ="next_page_practice" style="font-size: 30px; text-align: center; display:none"></p>
+<p id ="next_page_main" style="font-size: 30px; text-align: center; display:none"></p>
+
+</div>
+</div>
+
+
+<!-- <div id="header"></div> -->
+<!-- <div id="container">
+  <div id="markers"></div>
+    <div id="first"></div>
+    <div id="second"></div>
+    <div id="clear"></div>
+</div>
+<div id="myDIV">
+  <h1>Red</h1>
+</div>
+
+<p id="demo"></p> -->
+
+</body>
+</html>

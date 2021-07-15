@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="data:,"> 
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.float-container {
+    border: 3px solid #fff;
+    width: 90%;
+/*    height: 100%;*/
+justify-content: center;
+align-items: center;
+    padding: 20px;
+    background-color: white;
+}
+
+.float-child {
+    width: 5%;
+    float: center;
+    padding: 2%;
+    border: 1px white;
+    background-color: yellow;
+}
+.float-child-middle {
+    width: 5%;
+    float: center;
+    padding: 2%;
+    border: 1px white;
+    background-color: white;
+}
+   .img-container {
+        text-align: center;
+        display: block;
+      }
+</style>
+
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+<script type="text/javascript">
+var cachebuster = Math.round(new Date().getTime() / 1000);
+
+document.write('<scr'+'ipt type="text/javascript" src="robot_run.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+document.write('<scr'+'ipt type="text/javascript" src="human_run.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+document.write('<scr'+'ipt type="text/javascript" src="update_param.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+document.write('<scr'+'ipt type="text/javascript" src="idle_time.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+document.write('<scr'+'ipt type="text/javascript" src="killall.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+</script>
+<script src="robot_run.js"></script>
+<script src="human_run.js"></script>
+<script src="update_param.js"></script>
+
+
+
+</head>
+    <script type="text/javascript">
+        window.addEventListener('beforeunload', function (e) {
+         e.preventDefault();
+
+            // user_value_robot.set(false);
+            // user_value_human.set(false);
+            e.returnValue = '';
+        });
+    </script>
+<script type="text/javascript">
+var user_val,user_active = false,mode,confirm_next_page,disagree_mode;
+
+
+// /user_param hold the value true when the participants has selected I agree in the consent. Otherwise it will be false when the participant will select I disagree
+  var user_param_mode = new ROSLIB.Param({
+     ros : ros,
+     name :  '/user_param'
+    });
+user_param_mode.get(function(value) {
+user_val = value;
+
+});
+let timer, currSeconds = 0;
+
+// window.addEventListener('beforeunload', function (e) {
+//     // e.preventDefault();
+//     // e.returnValue = '';
+//                 letskill();
+//             user_value_robot.set(false);
+//             user_value_human.set(false);
+// });
+  
+
+  
+        // Define the events that
+        // would reset the timer
+       
+        window.onload = resetTimer;
+        window.onmousemove = resetTimer;
+        window.onmousedown = resetTimer;
+        window.ontouchstart = resetTimer;
+        window.onclick = resetTimer;
+        window.onkeypress = resetTimer;
+    
+
+//console.log("here"+user_val);
+
+  // while(user_active){
+  //   document.getElementById('consent').style.display = 'none';
+
+  // }
+
+function start(){
+  document.getElementById('myCheck').checked = false;
+  active_check = false;
+  user_value_robot.set(false);
+  user_value_human.set(false);
+   letskill();
+
+
+
+//console.log("here"+user_val);
+//user_val true will show that already another use is playing the game
+    var user_param_mode = new ROSLIB.Param({
+     ros : ros,
+     name :  '/user_param'
+    });
+user_param_mode.get(function(value) {
+  console.log("start first"+ value);
+//user_val = value;
+// sessionStorage.setItem("lastname", true);
+//  document.getElementById("result").innerHTML = sessionStorage.getItem("lastname");
+  if(value){
+    active_check = true;
+    document.getElementById('consent').style.display = 'none';
+    window.location.href = 'logout.html'
+    // //document.getElementById('active').style.display = 'block';
+    //         document.getElementById('label1').style.display = 'none';
+    // document.getElementById('label2').style.display = 'none';
+    //     document.getElementById('myCheck').style.display = 'none';
+    // document.getElementById('myCheck2').style.display = 'none';
+
+  } 
+});
+
+  console.log("in start" + user_val);
+
+
+
+}
+function agreeFunction(){
+  user_active = true;
+  //mode = false;
+  confirm_next_page = false;
+
+  
+    var user_param_mode = new ROSLIB.Param({
+     ros : ros,
+     name :  '/user_param'
+    });
+user_param_mode.get(function(value) {
+user_val = value;
+
+});
+
+//console.log("here"+user_val);
+//user_val true will show that already another use is playing the game
+  if(user_val){
+    window.location.href = 'logout.html';
+    
+    // document.getElementById('consent').style.display = 'none';
+    // //document.getElementById('active').style.display = 'block';
+    //         document.getElementById('label1').style.display = 'none';
+    // document.getElementById('label2').style.display = 'none';
+    //     document.getElementById('myCheck').style.display = 'none';
+    // document.getElementById('myCheck2').style.display = 'none';
+
+  } 
+  else{ //user_val false will show that it is safe to start playing
+  confirm_next_page = false;
+  active_check = true;
+  //resetTimer();
+  sessionStorage.setItem("practice_param_first_session", true);
+ //document.getElementById("result").innerHTML = sessionStorage.getItem("practice_param_first_session");
+   
+
+
+   //right now keeping the value false always because i will be there to monitor the process so no collision will happen
+  // user_value_robot.set(true);
+  // user_value_human.set(true);
+  console.log("here"+user_active);
+  var checkBox = document.getElementById("myCheck");
+  var text = document.getElementById("full_page");
+
+  var checkBox2 = document.getElementById("myCheck2");
+  var text2 = document.getElementById("disagree_page");
+  if (checkBox.checked == true && checkBox2.checked == false){
+    text.style.display = "block";
+    document.getElementById('consent').style.display = 'none';
+    document.getElementById('myCheck').style.display = 'none';
+    document.getElementById('myCheck2').style.display = 'none';
+    document.getElementById('label1').style.display = 'none';
+    document.getElementById('label2').style.display = 'none';
+  }
+}
+}
+function disagreeFunction(){
+
+  //   user_value_robot.set(false);
+  // user_value_human.set(false);
+  var checkBox = document.getElementById("myCheck2");
+  var text = document.getElementById("disagree_page");
+
+  var checkBox2 = document.getElementById("myCheck");
+  var text2 = document.getElementById("full_page");
+  if (checkBox.checked == true && checkBox2.checked == false){
+    text.style.display = "block";
+        document.getElementById('consent').style.display = 'none';
+    document.getElementById('myCheck').style.display = 'none';
+    document.getElementById('myCheck2').style.display = 'none';
+        document.getElementById('label1').style.display = 'none';
+    document.getElementById('label2').style.display = 'none';
+  } 
+}
+
+
+
+</script>
+<body onload="start();">
+<h1 style="text-align:center">Color Sequence Game</h1>
+<!--       <p class="timertext" 
+        style="font-size: 1.5rem;">
+        You are idle for
+        <span class="secs"></span> seconds.
+    </p> -->
+<!--     <div id="result"></div> -->
+<!-- <p id="active" style="display:none;font-size: 50px; text-align: center;"> I am sorry!! Someone is already playing the game. Can you please come a bit later? Thank you for your help. </p> -->
+<div id="consent">
+<p>We are conducting a research study to learn how a participant will interact with our simulated robot by playing a color-sequence matching game online designed by us.</p>
+
+<p>If you volunteer to be in this study, you will be asked to play a color sequence matching game where you will be asked to arrange a set of color blocks with a web version of a robot according to a given order. At first, you will have a practice session, then you will play the actual game with the robot. After this gaming session, you will be given a survey link to attend.</p>
+
+<p>Your participation should take around 20 minutes.</p>
+
+<p>This study is considered to be minimal risk of harm. This means the risks of your participation in the research are similar in type or intensity to what you encounter during your daily activities.</p>
+
+<p>Benefits of doing research are not definite; but we hope to learn some aspects of human-robot interaction styles. There are no direct benefits to you in this study activity.</p>
+
+<p>The researchers and the University of Nevada, Reno will treat your identity and the information collected about you with professional standards of confidentiality and protect it to the extent allowed by law. You will not be personally identified in any reports or publications that may result from this study. The US Department of Health and Human Services, the University of Nevada, Reno Research Integrity Office, and the Institutional Review Board may look at your study records.
+</p>
+<p>You may ask questions of the researcher at any time by calling Bashira Akter Anima, Phone: +1-775-470-1285 or by sending an email to banima@nevada.unr.edu. </p>
+
+<p>Your participation in this study is completely voluntary. You may stop at any time. Declining to participate or stopping your participation will not have any negative effects on you. </p>
+
+<p>You may ask about your rights as a research participant. If you have questions, concerns, or complaints about this research, you may report them (anonymously if you so choose) by calling the University of Nevada, Reno Research Integrity Office at 775.327.2368.</p>
+
+<p>You may ask about your rights as a research participant. If you have questions, concerns, or complaints about this research, you may report them (anonymously if you so choose) by calling the VA Sierra Nevada Health Care System’s Research Compliance Officer at 775-326-2783, or the University of Nevada, Reno Research Integrity Office at 775.327.2368. </p>
+
+
+<p>Thank you for your participation in this study!</p>
+
+
+<!-- <p> You are being invited to participate in a research study. Before you agree to be in the study, read this form carefully. You are being asked to play a color sequence game where you will be asked to arrange a set of color blocks with a web version of a robot according to a given order. After that you will be asked to fill up a questionnaire. The whole process should take around 20 minutes.<br> 
+
+We are not collecting any information of the participants in any part of the experiment which may identify you. We will not use your name or other information that could identify you in any reports or publications that result from this study.<br>
+
+Your participation in this research study is entirely voluntary. So, if you don't feel like taking part in this, you can close the window now.<br> -->
+
+                   
+</p>
+</div>
+
+<input type="checkbox" id="myCheck" onclick="agreeFunction()">
+<label for="myCheck" id="label1" style="font-size: 20px; text-align: center;">I Agree</label> 
+<br>
+ 
+<input type="checkbox" id="myCheck2" onclick="disagreeFunction()">
+<label for="myCheck2" id="label2" style="font-size: 20px; text-align: center;">I Disagree</label>
+
+<p id="disagree_page" style="font-size: 30px; text-align: center;display:none;"> Thank you for your time!!</p>
+<div id="full_page" style="display:none">
+  <p>In this game you and your teammate will be given a set of color blocks to place at a predefined location, following a given sequence that includes certain constraints. The color blocks are : 
+ </p>
+ <div class="float-container">
+ <div style="width: 100px; float:left; height:100px; background:red; margin:30px;text-align: center;white-space:pre;color: white;text-shadow: 1px  1px 2px black">
+<b>Red</b>
+</div>
+<div style="width: 100px; float:left; height:100px; background:blue; margin:30px;text-align: center;white-space:pre;color: white;text-shadow: 1px  1px 2px black">
+<b>Blue</b></div>
+<div style="width: 100px; float:left; height:100px; background:yellow; margin:30px;text-align: center;white-space:pre;color: white;text-shadow: 1px  1px 2px black">
+<b>Yellow</b>
+</div>
+<div style="width: 100px; float:left; height:100px; background:pink; margin:30px;text-align: center;white-space:pre;color: white;text-shadow: 1px  1px 2px black">
+<b>Pink</b></div>
+</div>
+<div style="clear:both;"></div>
+
+  <p >To represent the structure of the task, in this game there are two constraints called <b>THEN</b> and <b>AND</b>.<br> <br>
+  <b>THEN</b> is used to encode sequential constraints: for example, if the sequence is A THEN B, this means that task A must be completely done before task B can even start execution.<br><br>
+    <span class="img-container"> 
+      <img src="THEN.jpg" alt="" style="float:left;">
+    </span>
+   
+    <div style="clear:both;"></div>
+  <b>AND</b> is used to encodenon-ordering constraints: if the sequence is A AND B, both tasks A and B must be executed, but this can be done in any order.
+ <span class="img-container"> 
+      <img src="AND.jpg" alt="" style="float:left;">
+    </span> 
+  </p>
+ 
+ 
+ <div style="clear:both;"></div>
+<!--  <div style="width: 200px; float:left; height:80px; background:white; margin:30px;text-indent: 40px;white-space:pre;text-align: center;color: black;">
+<b> (A THEN B) -> </b>
+</div>
+ 	<div style="width: 80px; float:left; height:80px; background:red; margin:30px;text-align: : center;white-space:pre;text-align: center;color: white;text-shadow: 1px  1px 2px black">
+<b>A</b>
+</div>
+<div style="width: 80px; float:left; height:80px; background:blue; margin:30px;text-align: : center;white-space:pre;text-align: center;color: white;text-shadow: 1px  1px 2px black">
+<b>B</b></div>
+ <div style="clear:both;"></div>
+
+
+
+
+ <div style="width: 200px; float:left; height:80px; background:white; margin:30px;text-indent: 40px;white-space:pre;text-align: center;color: black;">
+<b> (A AND B) -> </b>
+</div>
+ 	<div style="width: 80px; float:left; height:80px; background:yellow; margin:30px;text-align: : center;white-space:pre;text-align: center;color: white;text-shadow: 1px  1px 2px black">
+<b>A</b>
+</div>
+<div style="width: 80px; float:left; height:80px; background:pink; margin:30px;text-align: : center;white-space:pre;text-align: center;color: white;text-shadow: 1px  1px 2px black">
+B</div>
+ 	<div style="width: 20px; float:left; height:20px; background:white; margin:30px;text-align: : center;white-space:pre;text-align: center;color: black;">
+<b>Or</b>
+</div>
+ 	<div style="width: 80px; float:left; height:80px; background:pink; margin:30px;text-align: : center;white-space:pre;text-align: center;color: white;text-shadow: 1px  1px 2px black">
+<b>B</b>
+</div>
+<div style="width: 80px; float:left; height:80px; background:yellow; margin:30px;text-align: : center;white-space:pre;text-align: center;color: white;text-shadow: 1px  1px 2px black">
+<b>A</b></div>
+ <div style="clear:both;"></div> -->
+<p style="text-align: center;font-size: 30px"><b>For this game, the task is: <br> 
+( Place-Red AND Place-Blue ) THEN ( Place-Yellow AND Place-Pink )</b></p>
+<p>Therefore, at first you and your teammate need to finish the (Place-Red AND Place-Blue) task before beginning to work on the (Place-Yellow AND Place-Pink) task.</p>
+<h1>How To Play:</h1>
+<p>Here, you will be playing this game with a web version of a robot. Both of you will play as a team to maintain the given color sequence with all the constraints. The interface will look as follows:</p>
+  <span class="img-container"> <!-- Inline parent element -->
+      <img src="game1_.png" alt="">
+    </span>
+<p>You can move your agent to pick and place the color block by using your mouse cursor. Both of the teammates will have different spots to place their color blocks. After picking and placing each color block, the current color sequence will be shown beside this.<br></p>
+<!-- In order to perform the pick and place properly, each time you need to place your agent on the fixed starting position. Then, you will go for your desired color block and place it on the fixed placing position for you.  As shown in the image, you will keep your agent in the right zone unless you are going for a color block.</p>-->
+<p>There can be situations where both you and the robot will be going to the same color block. In this case, the robot will bring up a window to ask if it would be allowed to continue.</p>
+  <span class="img-container"> <!-- Inline parent element -->
+      <img src="game2.png" alt="">
+    </span>
+
+ 
+  <p>If you choose OK, then you are letting the robot finish its task to pick and place the block. Meanwhile you can move to your next color blocks to match your sequence. If you choose Cancel, then you are responsible for placing that block while the robot will work on other parts of the color sequence task.
+
+<!-- For every move make sure to go to your starting position then start going for the color blocks. -->
+</p>
+<div style="text-align: center;font-size: 30px">
+<video width="850" height="450" controls>
+  <source src="demo4.mp4" type="video/mp4">
+<!--   <source src="movie.ogg" type="video/ogg"> -->
+  Your browser does not support the video tag.
+</video> </div>
+<!-- <p> Before starting the main game if you want to be familiar with the game, you can try the practice session. To do this, you can click your preferred game mode then click the link below to load the game.</p> -->
+<p> After finishing the game you will be given a unique ID and a link for a questionnaire. Please copy the given ID which will be required in your questionnaire part.</p>
+<p id="practice_session_button" style="font-size: 30px; text-align: center;"> <button onclick="update_practice_param_first()">Practice Session</button> </p>
+<!-- <p style="font-size: 30px; text-align: center;"> <button onclick="update_actual_param()">Main Game</button> </p>
+ -->
+ <!-- <p id ="next_page_main" style="font-size: 30px; text-align: center; display:none"><a href="marker.html" target="_blank">Please click to load the game</a></p> -->
+  <p id ="next_page_practice" style="font-size: 30px; text-align: center; display:none"><a href="marker.html" target="_blank" onblur="removeLink(this.id);>Please click to load the game</a></p>
+</div>
+
+</body>
+</html>
+

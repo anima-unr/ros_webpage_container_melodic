@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="data:,"> 
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.float-container {
+    border: 3px solid #fff;
+    width: 90%;
+/*    height: 100%;*/
+justify-content: center;
+align-items: center;
+    padding: 20px;
+    background-color: white;
+}
+
+.float-child {
+    width: 5%;
+    float: center;
+    padding: 2%;
+    border: 1px white;
+    background-color: yellow;
+}
+.float-child-middle {
+    width: 5%;
+    float: center;
+    padding: 2%;
+    border: 1px white;
+    background-color: white;
+}
+   .img-container {
+        text-align: center;
+        display: block;
+      }
+</style>
+
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+<script type="text/javascript">
+var cachebuster = Math.round(new Date().getTime() / 1000);
+
+document.write('<scr'+'ipt type="text/javascript" src="robot_run.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+document.write('<scr'+'ipt type="text/javascript" src="human_run.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+document.write('<scr'+'ipt type="text/javascript" src="update_param.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+document.write('<scr'+'ipt type="text/javascript" src="idle_time.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+</script>
+<script src="robot_run.js"></script>
+<script src="human_run.js"></script>
+<script src="update_param.js"></script>
+
+
+
+</head>
+    <script type="text/javascript">
+        window.addEventListener('beforeunload', function (e) {
+            user_value_robot.set(false);
+            user_value_human.set(false);
+        });
+    </script>
+<script type="text/javascript">
+var user_val,user_active = false,mode,confirm_next_page,disagree_mode;
+
+
+// /user_param hold the value true when the participants has selected I agree in the consent. Otherwise it will be false when the participant will select I disagree
+
+let timer, currSeconds = 0;
+
+
+  
+
+  
+        // Define the events that
+        // would reset the timer
+
+    
+
+//console.log("here"+user_val);
+
+  // while(user_active){
+  //   document.getElementById('consent').style.display = 'none';
+
+  // }
+
+function start(){
+  document.getElementById('myCheck').checked = false;
+  active_check = false;
+
+
+
+
+
+
+
+}
+
+
+
+
+</script>
+<body onload="start();">
+<h1 style="text-align:center">Color Sequence Game</h1>
+
+<!-- <p id="active" style="display:none;font-size: 50px; text-align: center;"> I am sorry!! Someone is already playing the game. Can you please come a bit later? Thank you for your help. </p> -->
+
+<div id="full_page" style="display:block">
+  <p>In this game you and your teammate will be given a set of color blocks to place at a predefined location, following a given sequence that includes certain constraints. The color blocks are : 
+ </p>
+ <div class="float-container">
+ <div style="width: 100px; float:left; height:100px; background:red; margin:30px;text-align: center;white-space:pre;color: white;text-shadow: 1px  1px 2px black">
+<b>Red</b>
+</div>
+<div style="width: 100px; float:left; height:100px; background:blue; margin:30px;text-align: center;white-space:pre;color: white;text-shadow: 1px  1px 2px black">
+<b>Blue</b></div>
+<div style="width: 100px; float:left; height:100px; background:yellow; margin:30px;text-align: center;white-space:pre;color: white;text-shadow: 1px  1px 2px black">
+<b>Yellow</b>
+</div>
+<div style="width: 100px; float:left; height:100px; background:pink; margin:30px;text-align: center;white-space:pre;color: white;text-shadow: 1px  1px 2px black">
+<b>Pink</b></div>
+</div>
+<div style="clear:both;"></div>
+
+  <p >To represent the structure of the task, in this game there are two constraints called <b>THEN</b> and <b>AND</b>.<br> <br>
+  <b>THEN</b> is used to encode sequential constraints: for example, if the sequence is A THEN B, this means that task A must be completely done before task B can even start execution.<br><br>
+  <b>AND</b> is used to encodenon-ordering constraints: if the sequence is A AND B, both tasks A and B must be executed, but this can be done in any order.
+ </p>
+ 
+ 
+ <div style="clear:both;"></div>
+
+<p style="text-align: center;font-size: 30px"><b>For this game, the task is: <br> 
+( Place-Red AND Place-Blue ) THEN ( Place-Yellow AND Place-Pink )</b></p>
+<p>Therefore, at first you and your teammate need to finish the (Place-Red AND Place-Blue) task before beginning to work on the (Place-Yellow AND Place-Pink) task.</p>
+<h1>How To Play:</h1>
+<p>Here, you will be playing this game with a web version of a robot. Both of you will play as a team to maintain the given color sequence with all the constraints. The interface will look as follows:</p>
+  <span class="img-container"> <!-- Inline parent element -->
+      <img src="game1_.png" alt="">
+    </span>
+<p>You can move your agent to pick and place the color block by using your mouse cursor. Both of the teammates will have different spots to place their color blocks. After picking and placing each color block, the current color sequence will be shown beside this.<br></p>
+<!-- In order to perform the pick and place properly, each time you need to place your agent on the fixed starting position. Then, you will go for your desired color block and place it on the fixed placing position for you.  As shown in the image, you will keep your agent in the right zone unless you are going for a color block.</p>-->
+<p>There can be situations where both you and the robot will be going to the same color block. In this case, the robot will bring up a window to ask if it would be allowed to continue.</p>
+  <span class="img-container"> <!-- Inline parent element -->
+      <img src="game2.png" alt="">
+    </span>
+
+ 
+  <p>If you choose OK, then you are letting the robot finish its task to pick and place the block. Meanwhile you can move to your next color blocks to match your sequence. If you choose Cancel, then you are responsible for placing that block while the robot will work on other parts of the color sequence task.
+
+<!-- For every move make sure to go to your starting position then start going for the color blocks. -->
+</p>
+<div style="text-align: center;font-size: 30px">
+<video width="850" height="450" controls>
+  <source src="demo4.mp4" type="video/mp4">
+<!--   <source src="movie.ogg" type="video/ogg"> -->
+  Your browser does not support the video tag.
+</video> </div>
+<!-- <p> Before starting the main game if you want to be familiar with the game, you can try the practice session. To do this, you can click your preferred game mode then click the link below to load the game.</p> -->
+<p> After finishing the game you will be given a unique ID and a link for a questionnaire. Please copy the given ID which will be required in your questionnaire part.</p>
+
+</div>
+
+</body>
+</html>
+
+
